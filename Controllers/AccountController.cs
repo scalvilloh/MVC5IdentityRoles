@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
 using ASP.NET_MVC5_Bootstrap3_3_1_LESS.Models;
+using ASP.NET_MVC5_Bootstrap_3._3._4_LESS1.Infrastructure;
 
 namespace ASP.NET_MVC5_Bootstrap3_3_1_LESS.Controllers
 {
@@ -16,14 +17,30 @@ namespace ASP.NET_MVC5_Bootstrap3_3_1_LESS.Controllers
     public class AccountController : Controller
     {
         public AccountController()
-            : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext())))
+            //: this(new ApplicationUserManager(new UserStore<ApplicationUser>(new ApplicationDbContext())))
         {
+
+            var identityDbContext = new ApplicationDbContext();
+            var userStore = new UserStore<ApplicationUser>(identityDbContext);
+            var applicationUserManager = new ApplicationUserManager(userStore);            
+            var roleStore  = new RoleStore<IdentityRole>(identityDbContext);
+            var roleManager = new ApplicationRoleManager(roleStore);
+
+            UserManager = applicationUserManager;
+            
+
         }
 
-        public AccountController(UserManager<ApplicationUser> userManager)
-        {
-            UserManager = userManager;
-        }
+        //public AccountController(ApplicationUserManager userManager)
+        //{
+
+
+
+        // //   var roleManager = HttpContext.GetOwinContext().Get<ApplicationRoleManager>("test");
+        // var roleStore  = new RoleStore<ApplicationUser>( ) 
+
+        //    UserManager = userManager;
+        //}
 
         public UserManager<ApplicationUser> UserManager { get; private set; }
 
@@ -44,7 +61,7 @@ namespace ASP.NET_MVC5_Bootstrap3_3_1_LESS.Controllers
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
             if (ModelState.IsValid)
-            {
+            {                
                 var user = await UserManager.FindAsync(model.UserName, model.Password);
                 if (user != null)
                 {

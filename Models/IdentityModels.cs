@@ -16,5 +16,10 @@ namespace ASP.NET_MVC5_Bootstrap3_3_1_LESS.Models
             : base("DefaultConnection")
         {
         }
+
+        public static ApplicationDbContext Create()
+        {
+            return new ApplicationDbContext();
+        }
     }
 }

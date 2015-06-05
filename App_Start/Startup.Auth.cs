@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using ASP.NET_MVC5_Bootstrap_3._3._4_LESS1.Infrastructure;
+using ASP.NET_MVC5_Bootstrap3_3_1_LESS.Models;
+using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Owin;
@@ -10,6 +12,11 @@ namespace ASP.NET_MVC5_Bootstrap3_3_1_LESS
         // For more information on configuring authentication, please visit http://go.microsoft.com/fwlink/?LinkId=301864
         public void ConfigureAuth(IAppBuilder app)
         {
+            app.CreatePerOwinContext(ApplicationDbContext.Create);
+            app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
+            app.CreatePerOwinContext<ApplicationRoleManager>(ApplicationRoleManager.Create);
+
+
             // Enable the application to use a cookie to store information for the signed in user
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
@@ -33,6 +40,17 @@ namespace ASP.NET_MVC5_Bootstrap3_3_1_LESS
             //   appSecret: "");
 
             //app.UseGoogleAuthentication();
+        }
+
+        private void ConfigureOAuthTokenGeneration(IAppBuilder app)
+        {
+            // Configure the db context and user manager to use a single instance per request
+            //Rest of code is removed for brevity
+
+            app.CreatePerOwinContext<ApplicationRoleManager>(ApplicationRoleManager.Create);
+
+            //Rest of code is removed for brevity
+
         }
     }
 }
